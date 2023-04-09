@@ -1,4 +1,4 @@
-import { SecretsManager } from "@aws-sdk/client-secrets-manager";
+import { SecretsManager } from "aws-sdk";
 /**
  * Gets secret value from AWS Secret Manager. Requires access rights to the secret, specified by the secretName parameter.
  * @param secretName name of the secret to retrieve
@@ -9,7 +9,7 @@ import { SecretsManager } from "@aws-sdk/client-secrets-manager";
     const secretManager = new SecretsManager({ region });
     let secretString = "";
     try {
-        let response = await secretManager.getSecretValue({ SecretId: secretName });
+        let response = await secretManager.getSecretValue({ SecretId: secretName }).promise();
         if (response) {
             if (response.SecretString) {
                 secretString = response.SecretString;
@@ -32,7 +32,7 @@ import { SecretsManager } from "@aws-sdk/client-secrets-manager";
 export async function validateSecret(secretName: string, region: string): Promise<string> {
     const secretManager = new SecretsManager({ region });
     try {
-        const response = await secretManager.describeSecret({ SecretId: secretName });
+        const response = await secretManager.describeSecret({ SecretId: secretName }).promise();
         return response.ARN!;
     }
     catch (error) {
